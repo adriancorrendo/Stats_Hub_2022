@@ -1,0 +1,215 @@
+---
+title: "Stats-Hub logo"
+author: Adrian Correndo
+format: html
+---
+
+# Creating the sticker
+
+This is a short tutorial to easily create your own stickers!
+
+Let's give it a try for this group and find our identity! 🙃
+
+## 00. Libraries
+
+```{r}
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(magick)
+library(hexSticker)
+library(sysfonts)
+
+```
+
+## 01. Prepare images
+
+```{r}
+image_networking <- magick::image_read('../images/networking.png')
+hub <- magick::image_read("../images/hub.png")
+calendar <- magick::image_read('../images/calendar.png')
+dinosaur <- magick::image_read('../images/dinosaur.png')
+footprint <- magick::image_read('../images/footprint.png')
+
+```
+
+## 02. Load fonts
+
+```{r}
+
+fonts <- font_files()
+
+# Check font paths
+# font_paths()
+
+# Add the font we want
+font_add(family = "Bahnschrift", regular = "C:\\Windows\\Fonts\\bahnschrift.ttf")
+
+```
+
+## 03. Stickers
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+statshub <- sticker(
+  # Title
+  package = "Stats-Hub",
+  # Title attributes
+  p_family = "Bahnschrift",
+  p_color = '#192a51',
+  p_size = 20,
+  p_y = 1.5,
+  # Image
+  subplot = hub,
+  # Image attributes
+  s_width = 1,
+  s_height = 1,
+  s_x = 1,
+  s_y = 0.85,
+  # Hexagon attributes
+  h_fill = '#faf9f9',
+  h_color = '#3a506b',
+  h_size = 1.5,
+  # Add a link
+  url = "FALL 2022",
+  u_size = 5,
+  u_color = '#003f88',
+  # Add spotlight
+  spotlight = F,
+  # Spotlight attributes
+  l_y = 1,
+  l_x = 1,
+  l_width = 3,
+  l_height = 3,
+  l_alpha = 0.3,
+  # File saving
+  filename = "statshub_logo.png",
+  dpi = 300,
+  white_around_sticker = FALSE
+  ) 
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+tidymonday <- sticker(
+  # Title
+  package = "TidyMonday",
+  # Title attributes
+  p_family = "Bahnschrift",
+  p_color = '#fffffc',
+  p_size = 20,
+  p_y = 1.45,
+  # Image
+  subplot = calendar,
+  # Image attributes
+  s_width = 0.8,
+  s_height = 0.8,
+  s_x = 1,
+  s_y = 0.85,
+  # Hexagon attributes
+  h_fill = '#3f88c5',
+  h_color = '#22223b',
+  h_size = 1.5,
+  # Add a link
+  url = "FALL 2022",
+  u_size = 5,
+  u_color = '#edf2f4',
+  # Add spotlight
+  spotlight = F,
+  # Spotlight attributes
+  l_y = 1,
+  l_x = 1,
+  l_width = 3,
+  l_height = 3,
+  l_alpha = 0.3,
+  # File saving
+  filename = "tidymonday_logo.png",
+  dpi = 300,
+  white_around_sticker = FALSE
+  ) 
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+statasaurus <- sticker(
+  # Title
+  package = "statasaurus",
+  # Title attributes
+  p_family = "Bahnschrift",
+  p_color = '#c9184a',
+  p_size = 20,
+  p_y = 0.55,
+  # Image
+  subplot = dinosaur,
+  # Image attributes
+  s_width = 0.95,
+  s_height = 0.95,
+  s_x = 1,
+  s_y = 1.2,
+  # Hexagon attributes
+  h_fill = '#d6e3f8',
+  h_color = '#5e548e',
+  h_size = 1.5,
+  # Add a link
+  url = "FALL 2022",
+  u_size = 5,
+  u_color = '#3d2645',
+  # Add spotlight
+  spotlight = F,
+  # Spotlight attributes
+  l_y = 1,
+  l_x = 1,
+  l_width = 3,
+  l_height = 3,
+  l_alpha = 0.3,
+  # File saving
+  filename = "statasaurus_logo.png",
+  dpi = 300,
+  white_around_sticker = FALSE
+  ) 
+
+
+
+```
+
+::: panel-tabset
+## Option A
+```{r}
+#| echo: false
+#| eval: true
+
+statshub %>% print()
+
+```
+
+## Option B
+```{r}
+#| echo: false
+#| eval: true
+
+tidymonday %>% print()
+
+```
+
+## Option C
+```{r}
+#| echo: false
+#| eval: true
+
+statasaurus %>% print()
+
+```
+
+:::
