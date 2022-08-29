@@ -53,6 +53,14 @@ font_add(family = "Bahnschrift", regular = "C:\\Windows\\Fonts\\bahnschrift.ttf"
 
 ```
 
+# Defininf color pallete
+
+```{r}
+party_color = list(red = "red", "blue")
+
+```
+
+
 ## 03. Stickers
 
 ```{r}
@@ -100,7 +108,7 @@ statshub <- sticker(
 ```
 
 ```{r}
-#| echo: false
+#| echo: true
 #| warning: false
 #| message: false
 
@@ -124,7 +132,7 @@ tidymonday <- sticker(
   h_color = '#22223b',
   h_size = 1.5,
   # Add a link
-  url = "FALL 2022",
+  url = "#TidyMondays",
   u_size = 5,
   u_color = '#edf2f4',
   # Add spotlight
@@ -136,7 +144,7 @@ tidymonday <- sticker(
   l_height = 3,
   l_alpha = 0.3,
   # File saving
-  filename = "tidymonday_logo.png",
+  filename = "selected_logo.png",
   dpi = 300,
   white_around_sticker = FALSE
   ) 
@@ -148,6 +156,7 @@ tidymonday <- sticker(
 #| warning: false
 #| message: false
 
+<<<<<<< HEAD
 # define pallete
 palette <- list('background' = '#d8f3dc',
                 'font' = '#372549',
@@ -159,6 +168,12 @@ background_color <- '#d8f3dc'
 font_color <- '#372549'
 border_color <- '#372549'
 note_color <- 'grey25'
+=======
+bakcground_color = '#d8f3dc'
+font_color = "#372549"
+border_color = font_color
+note_color = "black"
+>>>>>>> main
 
 statasaurus <- sticker(
   # Title
@@ -176,7 +191,11 @@ statasaurus <- sticker(
   s_x = 1,
   s_y = 1.2,
   # Hexagon attributes
+<<<<<<< HEAD
   h_fill = background_color,
+=======
+  h_fill = bakcground_color,
+>>>>>>> main
   h_color = border_color,
   h_size = 2,
   # Add a link
@@ -186,13 +205,18 @@ statasaurus <- sticker(
   # Add spotlight
   spotlight = F,
   # Spotlight attributes
+<<<<<<< HEAD
   l_y = 0.6,
+=======
+  # add some shadow to the pictures
+  l_y = 1,
+>>>>>>> main
   l_x = 1,
   l_width = 3,
   l_height = 3,
   l_alpha = 0.5,
   # File saving
-  filename = "statasaurus_logo.png",
+  filename = "selected_logo.png",
   dpi = 300,
   white_around_sticker = FALSE
   ) 
@@ -203,6 +227,7 @@ statasaurus <- sticker(
 
 ::: panel-tabset
 ## Option A
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -212,6 +237,7 @@ statshub %>% print()
 ```
 
 ## Option B
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -221,6 +247,7 @@ tidymonday %>% print()
 ```
 
 ## Option C
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -228,5 +255,4 @@ tidymonday %>% print()
 statasaurus %>% print()
 
 ```
-
 :::
