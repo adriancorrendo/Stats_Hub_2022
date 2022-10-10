@@ -1,0 +1,225 @@
+---
+title: "APSIM"
+author: '.'
+date: "10/6/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(dplyr)
+library(raster)
+library(sf)
+library(apsimx)
+library(parallel)
+library(purrr)
+library(nasapower)
+library(soilDB)
+library(metrica)
+library(readr)
+library(lubridate)
+cl <- makeCluster(getOption("cl.cores", 3))
+
+ 
+```
+
+
+```{r Sites}
+
+counties <- raster::getData(name="GADM", country="USA", level=2) %>% st_as_sf() %>%  filter(NAME_1 == "Kansas")
+
+ 
+  state <- raster::getData(name="GADM", country="USA", level=1) %>% st_as_sf()
+ 
+  sample_points <-counties %>%
+    filter(NAME_2 %in% c("Riley","Republic") ) %>% 
+    st_sample( rep(3, nrow(.)), type = 'regular', exact=TRUE) 
+  
+  
+    ggplot() +
+    geom_sf(data = counties, color= "grey60", fill="white") +
+    #geom_sf(data = state, fill=NA, color ="black", size=2)+
+    geom_sf(data = sample_points, colour = "red", fill = NA)+
+    coord_sf(xlim = c(-102.1, -94.5), ylim = c(36.9, 40.1), expand = FALSE) +
+    theme_bw() 
+ 
+
+
+```
+
+
+
+```{r Soil, echo=FALSE}
+
+sample_points <- 
+  do.call(rbind, st_geometry(sample_points)) %>% 
+  as_tibble() %>% setNames(c("lon","lat")) %>% 
+  mutate( id= seq(to= length(sample_points)))
+
+sample_points<-split(sample_points, sample_points$id)
+
+#download the data
+soil_data <-   parLapply(cl = cl, sample_points, function(a) {
+  library(apsimx)
+  library(soilDB)
+  library(spData)
+  try(get_ssurgo_soil_profile(
+    lonlat = c(a$lon, a$lat))
+  )}) 
+
+
+#remove the fails
+x=soil_data[sapply(soil_data, function(x) !"try-error" %in% class(x))]
+
+
+#create the simulations for each site  
+
+lapply(seq_along(x), function(y,n,i) {
+  library(apsimx)
+  edit_apsimx_replace_soil_profile(
+    file = "Maize.apsim",
+    src.dir = ".",
+    wrt.dir = ".",
+    soil.profile = y[[1]][[1]],
+    edit.tag = paste0("-",n[[i]] ),
+    overwrite = FALSE,
+    verbose = TRUE)
+  },y=x,  n=names(x) )
+
+
+
+```
+
+
+
+```{r Weather, echo=FALSE}
+
+#download weather 
+pwr <- lapply(sample_points, function(a){   
+  # couldn't use parallel because the server gets too many requests
+  library(apsimx)
+  try(get_power_apsim_met(
+    lonlat=c(mean(a$lon),mean(a$lat)),
+    dates = c("1990-01-01","2022-01-01")
+    ))})
+
+#check for errors
+x1=pwr[sapply(pwr, function(x) !"try-error" %in% class(x))] 
+
+# create the met files
+parLapply(cl=cl, seq_along(x1), function(y,n,i) {
+  library(apsimx)
+  write_apsim_met(
+  met = y[[i]] , wrt.dir = ".", filename = paste0(n[[i]],".met" ))} , y=x1, n=names(x1))
+
+# Match our weather with our soil
+lapply(sample_points, function(a)
+  apsimx::edit_apsimx(file = paste0("Maize-",a$id,".apsimx"),
+                      src.dir =".",
+                      node = "Weather",
+                      overwrite = TRUE,
+                      value = paste0(getwd(),"/",a$id,".met"),
+                      verbose =TRUE)   )
+
+```
+
+```{r management}
+
+#create a management
+Management <- expand.grid(
+  N   = c(0,100,200),
+  Sim = names(sample_points)  ) %>% 
+  mutate(id = paste0("Maize-",Sim,"-", N) )
+
+Management<-split(Management, Management$id)
+
+#create files
+lapply(Management, function(a){
+edit_apsimx(file = paste0("Maize-",a$Sim,".apsimx"),
+           overwrite = FALSE,
+           edit.tag = paste0("-", a$N),
+           src.dir =".",
+           node = "Manager",
+           manager.child ="SowingFertiliser" ,     
+           parm = "Amount",
+           value = paste0(a$N) ,
+           verbose =TRUE  ) }   )
+
+
+
+
+```
+
+```{r  run the model}
+
+
+#run apsim
+a=parLapply(cl=cl, Management, function(a) {
+ 
+   apsimx_options(exe.path = "C:/Users/APSIM2022.7.7061.0/bin/Models.exe")
+  
+ library(apsimx)
+  try( apsimx(
+    
+   file = paste0(a$id,".apsimx"),
+   value ="report",
+   silent = TRUE,
+   cleanup = FALSE,
+   simplify = FALSE
+      
+   ) )  } )
+
+#change name
+a=lapply(seq_along(a), function(y,n,i) {
+  
+   d = y[[i]] %>%  mutate(id = paste0(n[[i]] )) 
+    return(d)
+   
+  },y=a,  n=names(a) )
+
+
+#make one frame
+Sim= bind_rows(a) %>% mutate( Year= lubridate::year(Date)) %>% dplyr::select(id,Year,Maize.Grain.Wt ) %>% 
+  rename(Yield_Sim=Maize.Grain.Wt)
+
+#Obs<-Sim %>% mutate(yield = jitter(Yield_Sim,9000)) %>%  dplyr::select(id,Year, yield)
+#write.csv(Obs, "Observed.csv",row.names = FALSE)
+
+
+```
+
+```{r  metricas}
+
+Obs <- read_csv("Observed.csv") %>%
+  rename(Yield_Obs=yield)
+
+Metrica<-merge(Obs, Sim, by=c("id","Year") )
+
+# Create list of selected metrics
+selected.metrics <- c("RMSE", "RRMSE", "R2", "KGE", "PLA", "PLP")
+
+
+# Create the plot
+plot <- metrica::scatter_plot(data = Metrica, 
+                              obs = Yield_Obs, pred = Yield_Sim,
+                              # Activate print_metrics arg.
+                              print_metrics = TRUE, 
+                              # Indicate metrics list
+                              metrics_list = selected.metrics,
+                              # Customize metrics position
+                              position_metrics = c(x = 1400 , y = 500),
+                              # Customize equation position
+                              position_eq = c(x = 500, y = -200))
+
+plot
+
+
+
+
+
+
+```
+
+
