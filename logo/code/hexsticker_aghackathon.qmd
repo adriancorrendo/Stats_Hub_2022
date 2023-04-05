@@ -1,5 +1,5 @@
 ---
-title: "Stats-Hub logo"
+title: "Ag-Hackathon logo"
 author: Adrian Correndo
 format: html
 ---
@@ -26,12 +26,6 @@ library(sysfonts)
 ## 01. Prepare images
 
 ```{r}
-image_networking <- magick::image_read('../images/networking.png')
-hub <- magick::image_read("../images/hub.png")
-calendar <- magick::image_read('../images/calendar.png')
-dinosaur <- magick::image_read('../images/dinosaur.png')
-footprint <- magick::image_read('../images/footprint.png')
-
 hack01 <- magick::image_read('../images/hackathon.png')
 hack02 <- magick::image_read('../images/hackathon_02.png')
 hack03 <- magick::image_read('../images/coding.png')
@@ -67,16 +61,17 @@ font_color = "#272640"
 border_color = "#1b3a4b"
 note_color = "black"
 
+# Or we may just call the colors at each place if we are rotating options
 ```
 
-### Hackaton 01
+### Option 01
 ```{r}
 hex_hack01 <- sticker(
   # Title
   package = "AgHackathon",
   # Title attributes
   p_family = "Bahnschrift",
-  p_color = font_color,
+  p_color = "#272640",
   p_size = 40,
   p_y = 0.6,
   # Image
@@ -87,8 +82,8 @@ hex_hack01 <- sticker(
   s_x = 1,
   s_y = 1.18,
   # Hexagon attributes
-  h_fill = background_color,
-  h_color = border_color,
+  h_fill = '#d8f1ef',
+  h_color = "#1b3a4b",
   h_size = 2,
   # Add a link
   url = "image: Flaticon.com",
@@ -111,14 +106,14 @@ hex_hack01 <- sticker(
 hex_hack01
 ```
 
-### Hackaton 02
+### Option 02
 ```{r}
 hex_hack02 <- sticker(
   # Title
   package = "AgHackathon",
   # Title attributes
   p_family = "Bahnschrift",
-  p_color = background_color,
+  p_color = "#d8f1ef",
   p_size = 40,
   p_y = 0.58,
   # Image
@@ -129,13 +124,13 @@ hex_hack02 <- sticker(
   s_x = 1,
   s_y = 1.21,
   # Hexagon attributes
-  h_fill = border_color,
+  h_fill = "#1b3a4b",
   h_color = "#778da9",
   h_size = 0.5,
   # Add a link
   url = "image: Flaticon.com",
   u_size = 5,
-  u_color = background_color,
+  u_color = "#d8f1ef",
   # Add spotlight
   spotlight = F,
   # Spotlight attributes
@@ -153,14 +148,14 @@ hex_hack02 <- sticker(
 hex_hack02
 ```
 
-### Hackaton 03
+### Option 03
 ```{r}
 hex_hack03 <- sticker(
   # Title
   package = "AgHackathon",
   # Title attributes
   p_family = "Bahnschrift",
-  p_color = background_color,
+  p_color = "#d8f1ef",
   p_size = 40,
   p_y = 0.58,
   # Image
@@ -172,12 +167,12 @@ hex_hack03 <- sticker(
   s_y = 1.21,
   # Hexagon attributes
   h_fill = "#3d2645",
-  h_color = background_color,
+  h_color = "#d8f1ef",
   h_size = 0.5,
   # Add a link
   url = "image: Flaticon.com",
   u_size = 5,
-  u_color = background_color,
+  u_color = "#d8f1ef",
   # Add spotlight
   spotlight = F,
   # Spotlight attributes
@@ -195,61 +190,3 @@ hex_hack03 <- sticker(
 hex_hack03
 ```
 
-
-
-### Statasaurus logo
-```{r}
-#| echo: true
-#| warning: false
-#| message: false
-
-statasaurus <- sticker(
-  # Title
-  package = "statasaurus",
-  # Title attributes
-  p_family = "Bahnschrift",
-  p_color = font_color,
-  p_size = 21,
-  p_y = 0.6,
-  # Image
-  subplot = dinosaur,
-  # Image attributes
-  s_width = 0.95,
-  s_height = 0.95,
-  s_x = 1,
-  s_y = 1.2,
-  # Hexagon attributes
-  h_fill = background_color,
-  h_color = border_color,
-  h_size = 2,
-  # Add a link
-  url = "image: Flaticon.com",
-  u_size = 5,
-  u_color = note_color,
-  # Add spotlight
-  spotlight = F,
-  # Spotlight attributes
-  # add some shadow to the pictures
-  l_y = 1,
-  l_width = 3,
-  l_height = 3,
-  l_alpha = 0.5,
-  # File saving
-  filename = "statasaurus_logo.png",
-  dpi = 300,
-  white_around_sticker = FALSE
-  ) 
-
-```
-
-::: panel-tabset
-## Final logo
-
-```{r}
-#| echo: false
-#| eval: true
-
-statasaurus %>% print()
-
-```
-:::
