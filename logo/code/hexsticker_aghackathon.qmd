@@ -26,9 +26,8 @@ library(sysfonts)
 ## 01. Prepare images
 
 ```{r}
-hack01 <- magick::image_read('../images/hackathon.png')
-hack02 <- magick::image_read('../images/hackathon_02.png')
-hack03 <- magick::image_read('../images/coding.png')
+hack01 <- magick::image_read('C:/U of G/logo_2024/logo/images/soccerball.png')
+hack02 <- magick::image_read('C:/U of G/logo_2024/logo/images/magnifying_glass.png')
 ```
 
 ## 02. Load fonts
@@ -41,7 +40,7 @@ fonts <- font_files()
 # font_paths()
 
 # Add the font we want
-font_add(family = "Bahnschrift", regular = "C:\\Windows\\Fonts\\bahnschrift.ttf")
+font_add(family = "arial", regular = "C:\\Windows\\Fonts\\arial.ttf")
 
 ```
 
@@ -50,10 +49,10 @@ font_add(family = "Bahnschrift", regular = "C:\\Windows\\Fonts\\bahnschrift.ttf"
 ### Defining colors palette
 ```{r}
 # define pallete
-palette <- list('background' = '#d8f3dc',
-                'font' = '#4d908e',
-                'border' = '#0a9396',
-                'note' = 'grey25')
+palette <- list('background' = 'skyblue',
+                'font' = 'grey25',
+                'border' = 'paleturquoise2',
+                'note' = 'grey30')
 
 # Single Palette elements
 background_color = '#d8f1ef'
@@ -188,5 +187,36 @@ hex_hack03 <- sticker(
   )  
 
 hex_hack03
+```
+
+###Attempt1
+```{r}
+Attempt1 <- sticker(
+  # Title
+  package = "AlannaS",
+  # Title attributes
+  p_family = "arial",
+  p_color = "black",
+  p_size = 18,
+  p_y = 1.7,
+  # Image
+  subplot = hack01,
+  # Image attributes
+  s_width = 1,
+  s_height = 1,
+  s_x = 1,
+  s_y = 1,
+  
+  # Hexagon attributes
+  h_fill = 'skyblue',
+  h_color = "#1b3a4b",
+  h_size = 2,
+   
+  white_around_sticker = FALSE
+  ) 
+
+Attempt1
+
+
 ```
 
